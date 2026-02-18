@@ -1,0 +1,39 @@
+{
+  "name": "@stravigor/http",
+  "version": "0.5.6",
+  "type": "module",
+  "description": "HTTP layer for the Strav framework — router, server, middleware, authentication, sessions, validation, and views",
+  "license": "MIT",
+  "keywords": ["bun", "framework", "typescript", "strav", "http"],
+  "files": ["src/", "package.json", "tsconfig.json", "CHANGELOG.md"],
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http/index.ts",
+    "./http/*": "./src/http/*.ts",
+    "./view": "./src/view/index.ts",
+    "./view/*": "./src/view/*.ts",
+    "./session": "./src/session/index.ts",
+    "./session/*": "./src/session/*.ts",
+    "./validation": "./src/validation/index.ts",
+    "./validation/*": "./src/validation/*.ts",
+    "./policy": "./src/policy/index.ts",
+    "./policy/*": "./src/policy/*.ts",
+    "./auth": "./src/auth/index.ts",
+    "./auth/*": "./src/auth/*.ts",
+    "./providers": "./src/providers/index.ts",
+    "./providers/*": "./src/providers/*.ts"
+  },
+  "peerDependencies": {
+    "@stravigor/kernel": "workspace:*",
+    "@stravigor/database": "workspace:*"
+  },
+  "dependencies": {
+    "@vue/compiler-sfc": "^3.5.28",
+    "luxon": "^3.7.2",
+    "@types/luxon": "^3.7.1"
+  },
+  "scripts": {
+    "test": "bun test tests/",
+    "typecheck": "tsc --noEmit"
+  }
+}
