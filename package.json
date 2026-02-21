@@ -12,6 +12,7 @@
     "./http/*": "./src/http/*.ts",
     "./view": "./src/view/index.ts",
     "./view/*": "./src/view/*.ts",
+    "./view/client/*": "./src/view/client/*.ts",
     "./session": "./src/session/index.ts",
     "./session/*": "./src/session/*.ts",
     "./validation": "./src/validation/index.ts",
@@ -25,7 +26,8 @@
   },
   "peerDependencies": {
     "@stravigor/kernel": "workspace:*",
-    "@stravigor/database": "workspace:*"
+    "@stravigor/database": "workspace:*",
+    "vue": "^3.5.0"
   },
   "dependencies": {
     "@vue/compiler-sfc": "^3.5.28",

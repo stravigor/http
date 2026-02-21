@@ -320,7 +320,10 @@ export class IslandBuilder {
   watch(): void {
     if (this.watcher) return
 
-    this.build().catch(err => console.error('[islands] Build error:', err))
+    // Only build if not already built (avoids duplicate Bun.build() in same process)
+    if (!this._version) {
+      this.build().catch(err => console.error('[islands] Build error:', err))
+    }
 
     this.watcher = fsWatch(this.islandsDir, { recursive: true }, (_event, filename) => {
       if (filename && !filename.endsWith('.vue') && !filename.startsWith('setup.')) return

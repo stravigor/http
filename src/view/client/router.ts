@@ -25,6 +25,8 @@ import {
   type PropType,
 } from 'vue'
 import type { SpaRouteDefinition } from '../route_types.ts'
+export { defineRoutes } from '../route_types.ts'
+export type { SpaRouteDefinition } from '../route_types.ts'
 
 // ---------------------------------------------------------------------------
 // Types
