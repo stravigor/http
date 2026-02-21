@@ -369,10 +369,12 @@ export default {
 
 ### Using a service provider (recommended)
 
-```typescript
-import { HttpProvider } from '@stravigor/core/providers'
+Add to `start/providers.ts`:
 
-app.use(new HttpProvider())
+```typescript
+import { HttpProvider } from '@stravigor/http'
+
+new HttpProvider(),
 ```
 
 The `HttpProvider` registers `Server` and `Router` as singletons, starts the HTTP server on boot, and stops it on shutdown. It depends on the `config` provider. Place it last in your provider list since it starts accepting requests.

@@ -6,10 +6,12 @@ The session module provides a unified server-side session backed by a PostgreSQL
 
 ### Using a service provider (recommended)
 
-```typescript
-import { SessionProvider } from '@stravigor/core/providers'
+Add to `start/providers.ts`:
 
-app.use(new SessionProvider())
+```typescript
+import { SessionProvider } from '@stravigor/http'
+
+new SessionProvider(),
 ```
 
 The `SessionProvider` registers `SessionManager` as a singleton and creates the `_stravigor_sessions` table automatically. It depends on the `database` provider.

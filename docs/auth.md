@@ -8,11 +8,13 @@ All session-based auth requires the `session()` middleware from the [session mod
 
 ### Using a service provider (recommended)
 
-```typescript
-import { AuthProvider } from '@stravigor/core/providers'
-import User from './app/models/user'
+Add to `start/providers.ts`:
 
-app.use(new AuthProvider({ resolver: (id) => User.find(id) }))
+```typescript
+import { AuthProvider } from '@stravigor/http'
+import User from '../app/models/user'
+
+new AuthProvider({ resolver: (id) => User.find(id) }),
 ```
 
 The `AuthProvider` registers `Auth` as a singleton, sets the user resolver, and creates the `_stravigor_access_tokens` table automatically. It depends on the `database` provider.

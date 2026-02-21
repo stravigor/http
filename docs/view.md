@@ -21,12 +21,12 @@ router.get('/', async () => {
 
 ## Setup
 
-Register the `ViewProvider` in your application:
+Add the `ViewProvider` to `start/providers.ts`:
 
 ```typescript
-import { ViewProvider } from '@stravigor/core/providers'
+import { ViewProvider } from '@stravigor/http'
 
-app.use(new ViewProvider())
+new ViewProvider(),
 ```
 
 This registers the `ViewEngine` singleton and wires it into the HTTP context so `ctx.view()` works in all route handlers.
