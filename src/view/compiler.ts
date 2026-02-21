@@ -7,7 +7,7 @@ export interface CompilationResult {
 }
 
 interface StackEntry {
-  type: 'if' | 'each' | 'block'
+  type: 'if' | 'each' | 'section'
   line: number
   blockName?: string
 }
@@ -139,18 +139,27 @@ function compileDirective(
       break
     }
 
-    case 'block': {
-      if (!token.args) throw new TemplateError(`@block requires a name at line ${token.line}`)
+    case 'section': {
+      if (!token.args) throw new TemplateError(`@section requires a name at line ${token.line}`)
       const name = token.args.replace(/^['"]|['"]$/g, '').trim()
       const nameStr = JSON.stringify(name)
-      // If a child template already provided this block as data, yield it.
-      // Otherwise, render the default content between @block and @end.
+      // Capture content between @section and @end into __blocks.
+      // Does not output inline — content flows to parent layout via result.blocks.
+      lines.push(`__blocks[${nameStr}] = (function() { let __out = "";`)
+      stack.push({ type: 'section', line: token.line, blockName: name })
+      break
+    }
+
+    case 'show': {
+      if (!token.args) throw new TemplateError(`@show requires a name at line ${token.line}`)
+      const name = token.args.replace(/^['"]|['"]$/g, '').trim()
+      const nameStr = JSON.stringify(name)
+      // Output block content: prefer child-provided variable, fall back to __blocks.
       lines.push(`if (typeof ${name} !== 'undefined' && ${name} !== null) {`)
       lines.push(`  __out += ${name};`)
-      lines.push(`  __blocks[${nameStr}] = ${name};`)
       lines.push(`} else {`)
-      lines.push(`  __blocks[${nameStr}] = (function() { let __out = "";`)
-      stack.push({ type: 'block', line: token.line, blockName: name })
+      lines.push(`  __out += __blocks[${nameStr}] || '';`)
+      lines.push(`}`)
       break
     }
 
@@ -182,11 +191,8 @@ function compileDirective(
         throw new TemplateError(`Unexpected @end at line ${token.line} — no open block`)
       }
       const top = stack.pop()!
-      if (top.type === 'block') {
-        const nameStr = JSON.stringify(top.blockName!)
+      if (top.type === 'section') {
         lines.push(`  return __out; })();`)
-        lines.push(`  __out += __blocks[${nameStr}];`)
-        lines.push(`}`)
       } else if (top.type === 'each') {
         lines.push(`  }`) // close for loop
         lines.push(`}`) // close block scope

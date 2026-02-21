@@ -104,9 +104,11 @@ Render a partial template with its own data:
 
 The included template receives both the parent data and any additional data passed. Template names use `/` as separators, mapping to file paths inside the views directory.
 
-### Layouts and blocks
+### Layouts and sections
 
-Layouts define the page shell. Child templates fill named blocks.
+Layouts define the page shell. Child templates fill named sections.
+
+**Layout** — use `@show('name')` to mark where child content goes:
 
 ```html
 {{-- views/layouts/app.strav --}}
@@ -116,27 +118,50 @@ Layouts define the page shell. Child templates fill named blocks.
 <body>
   @include('partials/nav', { user })
   <main>
-    @if(content)
-      {!! content !!}
-    @else
-      <p>No content</p>
-    @end
+    @show('content')
   </main>
 </body>
 </html>
 ```
 
+**Child template** — use `@section('name')...@end` to provide content:
+
 ```html
 {{-- views/pages/dashboard.strav --}}
 @layout('layouts/app')
 
-@block('content')
+@section('content')
   <h1>Dashboard</h1>
   <p>Welcome back, {{ user.name }}</p>
 @end
 ```
 
-The child template renders first, collecting its blocks. Then the layout renders with those blocks available as data.
+The child template renders first, collecting its sections. Then the layout renders with those sections available as data.
+
+### Asset versioning
+
+Append content hashes to asset URLs for cache busting. List assets in `config/view.ts` and the `ViewProvider` handles the rest — hashing at boot, registering the `asset()` template global, and watching for changes in development.
+
+**Config:**
+
+```typescript
+// config/view.ts
+export default {
+  directory: 'resources/views',
+  cache: env.bool('VIEW_CACHE', true),
+  assets: ['/css/app.css'],
+}
+```
+
+**In templates:**
+
+```html
+<link rel="stylesheet" href="{{ asset('/css/app.css') }}">
+```
+
+Renders: `<link rel="stylesheet" href="/css/app.css?v=a1b2c3d4">`
+
+The hash changes when the file content changes. In development, file watchers automatically re-hash when assets are rebuilt. You can version any file in the public directory — CSS, JS, images, fonts.
 
 ## Vue islands
 
@@ -192,13 +217,9 @@ Both `<script setup>` and Options API (`<script>`) are supported. `<style scoped
 {{-- views/pages/home.strav --}}
 @layout('layouts/app')
 
-@block('content')
+@section('content')
   <h1>Welcome</h1>
   <vue:counter :initial="{{ startCount }}" />
-@end
-
-@block('scripts')
-  @islands
 @end
 ```
 

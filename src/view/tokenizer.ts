@@ -23,7 +23,8 @@ const DIRECTIVES = new Set([
   'end',
   'each',
   'layout',
-  'block',
+  'section',
+  'show',
   'include',
   'islands',
 ])

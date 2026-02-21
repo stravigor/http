@@ -17,6 +17,7 @@ export default class Server {
     const hostname = this.config.get('http.host', '0.0.0.0') as string
     const domain = this.config.get('http.domain', 'localhost') as string
     const publicDir = this.config.get('http.public') as string | undefined
+    const idleTimeout = this.config.get('http.idleTimeout', 10) as number
 
     router.setDomain(domain)
 
@@ -29,6 +30,7 @@ export default class Server {
     this.instance = Bun.serve<WebSocketData>({
       port,
       hostname,
+      idleTimeout,
       ...(staticRoutes ? { static: staticRoutes } : {}),
       fetch: (request: Request, server: import('bun').Server<WebSocketData>) => {
         // Content negotiation for files with pre-compressed variants

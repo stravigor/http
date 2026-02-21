@@ -4,6 +4,7 @@ export { compile } from './compiler.ts'
 export { default as TemplateCache } from './cache.ts'
 export { escapeHtml } from './escape.ts'
 export { staticFiles } from './middleware/static.ts'
+export { AssetVersioner } from './asset_versioner.ts'
 export { IslandBuilder } from './islands/island_builder.ts'
 export { vueSfcPlugin } from './islands/vue_plugin.ts'
 
