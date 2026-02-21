@@ -1,6 +1,6 @@
 # @stravigor/http
 
-HTTP layer for the Strav framework — router, server, middleware, authentication, sessions, validation, views, and authorization policies.
+HTTP layer for the Strav framework — router, server, middleware, authentication, sessions, validation, and authorization policies.
 
 ## Dependencies
 - @stravigor/kernel (peer)
@@ -10,8 +10,7 @@ HTTP layer for the Strav framework — router, server, middleware, authenticatio
 - bun run typecheck
 
 ## Architecture
-- src/http/ — Router, Server, Context, CORS, rate limiting, cookies
-- src/view/ — Template engine, compiler, Vue SFC islands
+- src/http/ — Router, Server, Context, CORS, rate limiting, cookies, static files
 - src/session/ — Session manager and middleware
 - src/validation/ — Validation engine and rules
 - src/policy/ — Authorization policies
@@ -20,7 +19,7 @@ HTTP layer for the Strav framework — router, server, middleware, authenticatio
   - http_cache.ts — Cache-Control/ETag middleware (from kernel/cache)
   - i18n.ts — Locale detection middleware (from kernel/i18n)
   - request_logger.ts — Request logging middleware (from kernel/logger)
-- src/providers/ — HttpProvider, AuthProvider, SessionProvider, ViewProvider
+- src/providers/ — HttpProvider, AuthProvider, SessionProvider
 
 ## Conventions
 - Context implements kernel's RequestContext interface

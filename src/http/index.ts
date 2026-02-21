@@ -16,3 +16,5 @@ export type { RateLimitOptions, RateLimitStore, RateLimitInfo } from './rate_lim
 
 if (!app.has(Router)) app.singleton(Router)
 export const router = app.resolve(Router)
+
+export { staticFiles } from './static_files.ts'

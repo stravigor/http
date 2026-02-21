@@ -1,6 +1,10 @@
 import { parseCookies } from './cookie.ts'
-import type ViewEngine from '../view/engine.ts'
 import { ConfigurationError } from '@stravigor/kernel/exceptions/errors'
+
+/** Minimal interface for the view engine — avoids importing @stravigor/view. */
+export interface ViewRenderer {
+  render(template: string, data?: Record<string, unknown>): Promise<string>
+}
 
 /**
  * HTTP request context — the primary object handlers interact with.
@@ -9,9 +13,9 @@ import { ConfigurationError } from '@stravigor/kernel/exceptions/errors'
  * response helpers, and a type-safe state bag for middleware.
  */
 export default class Context {
-  private static _viewEngine: ViewEngine | null = null
+  private static _viewEngine: ViewRenderer | null = null
 
-  static setViewEngine(engine: ViewEngine): void {
+  static setViewEngine(engine: ViewRenderer): void {
     Context._viewEngine = engine
   }
 

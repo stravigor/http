@@ -118,7 +118,7 @@ On **state-changing** requests (POST, PUT, PATCH, DELETE), it checks for a valid
 
 Returns `403` if the token is missing or doesn't match.
 
-In `.strav` templates, use the `@csrf` directive inside forms to output the hidden input automatically — see the [view engine docs](./view.md#csrf).
+In `.strav` templates, use the `@csrf` directive inside forms to output the hidden input automatically — see the [view engine docs](../../view/docs/view.md#csrf).
 
 > Note: The `session()` middleware already sets `ctx.get('csrfToken')` on every request, so `csrf()` is only needed for the server-side validation on state-changing requests.
 

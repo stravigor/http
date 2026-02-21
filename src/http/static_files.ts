@@ -1,5 +1,5 @@
 import { resolve, normalize } from 'node:path'
-import type { Middleware } from '../../http/middleware.ts'
+import type { Middleware } from './middleware.ts'
 
 export function staticFiles(root = 'public'): Middleware {
   const resolvedRoot = resolve(root)

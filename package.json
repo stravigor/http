@@ -2,7 +2,7 @@
   "name": "@stravigor/http",
   "version": "0.5.6",
   "type": "module",
-  "description": "HTTP layer for the Strav framework — router, server, middleware, authentication, sessions, validation, and views",
+  "description": "HTTP layer for the Strav framework — router, server, middleware, authentication, sessions, and validation",
   "license": "MIT",
   "keywords": ["bun", "framework", "typescript", "strav", "http"],
   "files": ["src/", "package.json", "tsconfig.json", "CHANGELOG.md"],
@@ -10,9 +10,6 @@
     ".": "./src/index.ts",
     "./http": "./src/http/index.ts",
     "./http/*": "./src/http/*.ts",
-    "./view": "./src/view/index.ts",
-    "./view/*": "./src/view/*.ts",
-    "./view/client/*": "./src/view/client/*.ts",
     "./session": "./src/session/index.ts",
     "./session/*": "./src/session/*.ts",
     "./validation": "./src/validation/index.ts",
@@ -26,11 +23,9 @@
   },
   "peerDependencies": {
     "@stravigor/kernel": "workspace:*",
-    "@stravigor/database": "workspace:*",
-    "vue": "^3.5.0"
+    "@stravigor/database": "workspace:*"
   },
   "dependencies": {
-    "@vue/compiler-sfc": "^3.5.28",
     "luxon": "^3.7.2",
     "@types/luxon": "^3.7.1"
   },
