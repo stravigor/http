@@ -308,6 +308,137 @@ Include the bundled script in your layout:
 <script type="module" src="/assets/app.js"></script>
 ```
 
+## SPA routing
+
+For single-page applications built with Vue islands, the framework provides a shared routing system. Route definitions are declared once and used by both the server (to register GET handlers) and the client (to match URLs and render views).
+
+### Defining routes
+
+Create a shared route file that both server and client import:
+
+```typescript
+// routes/spa.ts
+import { defineRoutes } from '@stravigor/http'
+
+export default defineRoutes([
+  { path: '/', name: 'dashboard', view: 'Dashboard' },
+  { path: '/settings', name: 'settings', view: 'Settings' },
+  { path: '/projects/:id', name: 'project', view: 'ProjectDashboard',
+    props: (p) => ({ projectId: Number(p.id) }) },
+  { path: '/projects/:id/chat', name: 'chat', view: 'Chat',
+    props: (p) => ({ projectId: Number(p.id) }) },
+])
+```
+
+Each route has a `path` (with `:param` segments), a `name` for programmatic navigation, and a `view` string that maps to a Vue component. The optional `props` function converts URL params into component props.
+
+### Server-side registration
+
+Use `spaRoutes()` to register all routes as GET handlers pointing to a single controller action (which renders the shell template):
+
+```typescript
+// start/routes.ts
+import { spaRoutes } from '@stravigor/http'
+import spaRouteDefs from '../routes/spa.ts'
+
+export default (router: Router) => {
+  spaRoutes(router, spaRouteDefs, [AppController, 'index'])
+}
+```
+
+This replaces manual `router.get()` calls for each SPA route. The controller renders the base template with the Vue island that hosts the SPA shell.
+
+### Client-side router
+
+The client-side router is a Vue plugin that provides reactive route matching, programmatic navigation, and `RouterView`/`RouterLink` components.
+
+**Initialize in setup.ts:**
+
+```typescript
+// islands/setup.ts
+import type { App } from 'vue'
+import { createRouter } from '@stravigor/http/view/client/router'
+import spaRouteDefs from '../../routes/spa.ts'
+import Dashboard from './views/Dashboard.vue'
+import Chat from './views/Chat.vue'
+import NotFound from './views/NotFound.vue'
+
+export default (app: App) => {
+  app.use(createRouter({
+    routes: spaRouteDefs,
+    views: { Dashboard, Chat },
+    fallback: NotFound,
+  }))
+}
+```
+
+The `views` object maps view names (from route definitions) to Vue components. The optional `fallback` component renders for unmatched URLs.
+
+**Use in the shell component:**
+
+```vue
+<!-- islands/app.vue -->
+<template>
+  <aside><!-- sidebar --></aside>
+  <main>
+    <RouterView />
+  </main>
+</template>
+```
+
+`RouterView` renders the matched component with resolved props automatically.
+
+### Composables
+
+**`useRouter()`** — returns the router instance for programmatic navigation:
+
+```typescript
+import { useRouter } from '@stravigor/http/view/client/router'
+
+const router = useRouter()
+
+// Navigate by path
+router.push('/projects/1/chat')
+
+// Navigate by name
+router.push({ name: 'chat', params: { id: '1' } })
+
+// Replace (no history entry)
+router.replace('/settings')
+
+// History navigation
+router.back()
+router.forward()
+```
+
+**`useRoute()`** — returns a reactive ref of the current route:
+
+```typescript
+import { useRoute } from '@stravigor/http/view/client/router'
+
+const route = useRoute()
+
+// Access reactive route data
+route.value.path    // '/projects/1/chat'
+route.value.name    // 'chat'
+route.value.params  // { id: '1' }
+route.value.view    // 'Chat'
+```
+
+### RouterLink
+
+`RouterLink` renders an `<a>` tag with client-side navigation. It respects modifier keys (Cmd/Ctrl+click opens in a new tab).
+
+```vue
+<RouterLink to="/settings" v-slot="{ isActive }">
+  <span :class="isActive ? 'text-white' : 'text-gray-500'">Settings</span>
+</RouterLink>
+```
+
+The scoped slot exposes `{ href, isActive, isExactActive, navigate }`.
+
+`isActive` is `true` when the current path starts with the link's href (prefix match). `isExactActive` is `true` only on exact match.
+
 ## Static file middleware
 
 Serve files from a `public/` directory:

@@ -256,6 +256,7 @@ export class IslandBuilder {
       entrypoints: ['virtual:islands-entry'],
       outdir: this.outDir,
       naming: this.outFile,
+      format: 'iife',
       minify: this.minify,
       target: 'browser',
       plugins: [virtualEntryPlugin, vueSfcPlugin()],
