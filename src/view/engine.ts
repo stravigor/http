@@ -1,4 +1,5 @@
 import { resolve, join } from 'node:path'
+import { watch as fsWatch, type FSWatcher } from 'node:fs'
 import { inject } from '@stravigor/kernel/core/inject'
 import Configuration from '@stravigor/kernel/config/configuration'
 import { escapeHtml } from './escape.ts'
@@ -18,6 +19,7 @@ export default class ViewEngine {
   private directory: string
   private cacheEnabled: boolean
   private cache: TemplateCache
+  private watcher: FSWatcher | null = null
 
   constructor(config: Configuration) {
     this.directory = resolve(config.get('view.directory', 'resources/views') as string)
@@ -106,6 +108,27 @@ export default class ViewEngine {
 
     this.cache.set(name, entry)
     return entry
+  }
+
+  /** Watch the views directory for `.strav` changes and clear the cache. */
+  watch(): void {
+    if (this.watcher) return
+
+    this.watcher = fsWatch(this.directory, { recursive: true }, (_event, filename) => {
+      if (!filename || !filename.endsWith('.strav')) return
+      this.cache.clear()
+      console.log(`[views] ${filename} changed, cache cleared`)
+    })
+
+    console.log(`[views] Watching ${this.directory}`)
+  }
+
+  /** Stop watching for template changes. */
+  unwatch(): void {
+    if (this.watcher) {
+      this.watcher.close()
+      this.watcher = null
+    }
   }
 
   private resolvePath(name: string): string {

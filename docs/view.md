@@ -336,6 +336,18 @@ In production (`VIEW_CACHE=true`), templates are compiled once and cached in mem
 
 In development (`VIEW_CACHE=false`), the engine checks file modification times before each render and recompiles automatically when the source changes.
 
+### Watching for changes
+
+Call `watch()` to clear the cache automatically when `.strav` files change — no server restart needed:
+
+```typescript
+if (Bun.env.NODE_ENV !== 'production') {
+  ViewEngine.instance.watch()
+}
+```
+
+This uses `fs.watch()` recursively on the views directory. When a `.strav` file is modified, the entire cache is cleared and the next request recompiles the template from disk. Call `unwatch()` to stop.
+
 ## Testing
 
 Test templates directly with the engine:
