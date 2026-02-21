@@ -195,7 +195,9 @@ export default class Context {
     if (!Context._viewEngine) {
       throw new ConfigurationError('ViewEngine not configured. Register it in the container.')
     }
-    const html = await Context._viewEngine.render(template, data)
+    const csrfToken = this.get('csrfToken')
+    const merged = csrfToken ? { csrfToken, ...data } : data
+    const html = await Context._viewEngine.render(template, merged)
     return this.html(html, status)
   }
 

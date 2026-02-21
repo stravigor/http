@@ -96,13 +96,7 @@ import { csrf } from '@stravigor/core/auth'
 // Works with both anonymous and authenticated sessions
 router.group({ middleware: [session(), csrf()] }, (r) => {
   r.get('/form', (ctx) => {
-    const csrfToken = ctx.get('csrfToken')
-    return ctx.html(`
-      <form method="POST" action="/submit">
-        <input type="hidden" name="_token" value="${csrfToken}">
-        <button type="submit">Submit</button>
-      </form>
-    `)
+    return ctx.view('form')  // use @csrf in the template
   })
 
   r.post('/submit', (ctx) => {
@@ -121,6 +115,8 @@ On **state-changing** requests (POST, PUT, PATCH, DELETE), it checks for a valid
 3. `_token` field in a JSON or form body
 
 Returns `403` if the token is missing or doesn't match.
+
+In `.strav` templates, use the `@csrf` directive inside forms to output the hidden input automatically — see the [view engine docs](./view.md#csrf).
 
 > Note: The `session()` middleware already sets `ctx.get('csrfToken')` on every request, so `csrf()` is only needed for the server-side validation on state-changing requests.
 

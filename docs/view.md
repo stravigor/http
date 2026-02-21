@@ -94,6 +94,22 @@ Inside loops, these variables are available automatically:
 @end
 ```
 
+### CSRF
+
+Output a hidden CSRF token input inside forms:
+
+```html
+<form method="POST" action="/submit">
+  @csrf
+  <input type="text" name="title">
+  <button type="submit">Save</button>
+</form>
+```
+
+Renders: `<input type="hidden" name="_token" value="a1b2c3...">`. The token is automatically available when the `session()` middleware is active — no need to pass it from the controller.
+
+Pair with the `csrf()` middleware on the route group to validate incoming tokens on POST/PUT/PATCH/DELETE (see [auth docs](./auth.md#csrf--csrf-protection)).
+
 ### Includes
 
 Render a partial template with its own data:

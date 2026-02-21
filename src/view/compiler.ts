@@ -186,6 +186,12 @@ function compileDirective(
       break
     }
 
+    case 'csrf':
+      lines.push(
+        `__out += '<input type="hidden" name="_token" value="' + __escape(csrfToken) + '">';`
+      )
+      break
+
     case 'end': {
       if (!stack.length) {
         throw new TemplateError(`Unexpected @end at line ${token.line} — no open block`)
